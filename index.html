@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Map Example</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <button
+      id="addRandomMarket"
+      onclick="addMarker({   position:{ lat: randomCoordinateX(), lng: randomCoordinateY() } })"
+    >
+      Get Random Marker
+    </button>
+
+    <style>
+      #addRandomMarket {
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        transform: translateX(-500%);
+        transition: 0.36s ease-out;
+        padding: 5px 12px;
+        color: #fff;
+        background: #1890ff;
+        border: 1px solid #1890ff;
+        cursor: pointer;
+      }
+      #addRandomMarket:hover {
+        background-color: #40a9ff;
+        border-color: #40a9ff;
+      }
+      #map {
+        height: 100%;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <script>
+      window.addEventListener("load", () => {
+        const button=document.getElementById("addRandomMarket");
+        button.style.transform="translateX(0)"
+      });
+
+      const randomCoordinateY = () =>
+        Number(Math.round(Math.random() * (44.0 - 27.5)) + 27.5);
+      const randomCoordinateX = () =>
+        Number(Math.round(Math.random() * (41.3 - 37.3)) + 37.3);
+
+      let map;
+      let markerArray = [];
+      let infoDetail;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 38.9637, lng: 35.2433 },
+          zoom: 7,
+        });
+
+        infoDetail = new google.maps.InfoWindow({
+          content: `<h2>Burası bir html...</h2>`,
+        });
+      }
+
+      function addMarker({ position }) {
+        var marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          index: markerArray.length,
+        });
+        markerArray.push(marker);
+
+        let infoBox = new google.maps.InfoWindow({
+          content: `<div>lat: ${position.lat} lng: ${position.lng}</div>`,
+        });
+
+        marker.addListener("click", () => {
+          console.log("marker clicked");
+          infoBox.open(map, marker);
+          setTimeout(function () {
+            infoBox.close();
+          }, 3000);
+        });
+      }
+    </script>
+
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?YOUR_API_KEY&callback=initMap"
+    ></script>
+  </body>
+</html>
